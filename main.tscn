@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://q15y20fpcibv"]
+
+[ext_resource type="Script" uid="uid://b7evjgkamx8qv" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://4ouvtm4tnmdf" path="res://player.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bh5u2pmftxp52" path="res://projectile.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bs5ltke60vgtl" path="res://duckling.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://s3qxlr02a8sn" path="res://hud.tscn" id="4_7mycd"]
+[ext_resource type="Texture2D" uid="uid://by8f6fnntgoj7" path="res://Art/background.png" id="5_lquwl"]
+
+[sub_resource type="Curve2D" id="Curve2D_h2yge"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 480, 0)
+}
+point_count = 2
+
+[node name="Main" type="Node"]
+script = ExtResource("1_ig7tw")
+projectile_scene = ExtResource("2_h2yge")
+duckling_scene = ExtResource("3_1bvp3")
+
+[node name="HUD" parent="." instance=ExtResource("4_7mycd")]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_top = -1.0
+offset_right = 480.0
+offset_bottom = 719.0
+texture = ExtResource("5_lquwl")
+
+[node name="Player" parent="." instance=ExtResource("2_0xm2m")]
+position = Vector2(0, -1)
+
+[node name="StartPosition" type="Marker2D" parent="."]
+position = Vector2(240, 600)
+
+[node name="DucklingPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_h2yge")
+
+[node name="DucklingSpawnLocation" type="PathFollow2D" parent="DucklingPath"]
+
+[node name="DucklingTimer" type="Timer" parent="."]
+wait_time = 2.0
+
+[node name="WaveTimer" type="Timer" parent="."]
+wait_time = 15.0
+
+[connection signal="start_game" from="HUD" to="." method="new_game"]
+[connection signal="timeout" from="DucklingTimer" to="." method="_on_duckling_timer_timeout"]
+[connection signal="timeout" from="WaveTimer" to="." method="_on_wave_timer_timeout"]
